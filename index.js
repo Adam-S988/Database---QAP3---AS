@@ -8,14 +8,14 @@ app.use(express.json());
 const uri =
   "mongodb+srv://adambrstevenson:Pokemonn1122@qap3-books.qfu0o.mongodb.net/";
 const client = new MongoClient(uri);
-let tasksCollection;
+let booksCollection;
 
 // Connect to MongoDB
 async function connectToDatabase() {
   try {
     await client.connect();
     const database = client.db("taskManager"); // Replace 'taskManager' with your database name
-    tasksCollection = database.collection("tasks");
+    booksCollection = database.collection("books");
     console.log("Connected to MongoDB Atlas");
   } catch (error) {
     console.error("Error connecting to MongoDB Atlas:", error);
@@ -23,25 +23,44 @@ async function connectToDatabase() {
   }
 }
 
-let tasks = [
-  { id: 1, description: "Buy groceries", status: "incomplete" },
-  { id: 2, description: "Read a book", status: "complete" },
+let books = [
+  {
+    id: 1,
+    title: "The Hobbit",
+    author: "J. R. R. Tolken",
+    genre: "Fantasy",
+    year: "1937",
+  },
+  {
+    id: 2,
+    title: "To Kill a Mockingbird",
+    author: "Harper Lee",
+    genre: "Fiction",
+    year: "1960",
+  },
+  {
+    id: 3,
+    title: "1984",
+    author: "George Orwell",
+    genre: "Dystopian",
+    year: "1949",
+  },
 ];
 
 connectToDatabase();
 
-// GET /tasks - Get all tasks
-app.get("/tasks", async (req, res) => {
+// GET /books - Get all books
+app.get("/books", async (req, res) => {
   try {
-    const tasks = await tasksCollection.find({}).toArray();
-    res.json(tasks);
+    const books = await booksCollection.find({}).toArray();
+    res.json(books);
   } catch (error) {
-    res.status(500).json({ error: "Failed to fetch tasks" });
+    res.status(500).json({ error: "Failed to fetch books" });
   }
 });
 
-// POST /tasks - Add a new task
-app.post("/tasks", (request, response) => {
+// POST /books - Add a new task
+app.post("/books", (request, response) => {
   const { id, description, status } = request.body;
   if (!id || !description || !status) {
     return response
@@ -49,15 +68,15 @@ app.post("/tasks", (request, response) => {
       .json({ error: "All fields (id, description, status) are required" });
   }
 
-  tasks.push({ id, description, status });
+  books.push({ id, description, status });
   response.status(201).json({ message: "Task added successfully" });
 });
 
-// PUT /tasks/:id - Update a task's status
-app.put("/tasks/:id", (request, response) => {
+// PUT /books/:id - Update a task's status
+app.put("/books/:id", (request, response) => {
   const taskId = parseInt(request.params.id, 10);
   const { status } = request.body;
-  const task = tasks.find((t) => t.id === taskId);
+  const task = books.find((t) => t.id === taskId);
 
   if (!task) {
     return response.status(404).json({ error: "Task not found" });
@@ -66,13 +85,13 @@ app.put("/tasks/:id", (request, response) => {
   response.json({ message: "Task updated successfully" });
 });
 
-// DELETE /tasks/:id - Delete a task
-app.delete("/tasks/:id", (request, response) => {
+// DELETE /books/:id - Delete a task
+app.delete("/books/:id", (request, response) => {
   const taskId = parseInt(request.params.id, 10);
-  const initialLength = tasks.length;
-  tasks = tasks.filter((t) => t.id !== taskId);
+  const initialLength = books.length;
+  books = books.filter((t) => t.id !== taskId);
 
-  if (tasks.length === initialLength) {
+  if (books.length === initialLength) {
     return response.status(404).json({ error: "Task not found" });
   }
   response.json({ message: "Task deleted successfully" });
