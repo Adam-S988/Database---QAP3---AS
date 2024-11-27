@@ -6,7 +6,7 @@ const PORT = 3000;
 app.use(express.json());
 
 const uri =
-  "mongodb+srv://adambrstevenson:Pokemonn1122@qap3-books.qfu0o.mongodb.net/";
+  "mongodb+srv://adamstevenson:prVF1W1rzyMOgjlr@Books.o03qa.mongodb.net";
 const client = new MongoClient(uri);
 let booksCollection;
 
@@ -14,38 +14,14 @@ let booksCollection;
 async function connectToDatabase() {
   try {
     await client.connect();
-    const database = client.db("taskManager"); // Replace 'taskManager' with your database name
-    booksCollection = database.collection("books");
+    const database = client.db("QAP3"); // Replace 'taskManager' with your database name
+    booksCollection = database.collection("Books");
     console.log("Connected to MongoDB Atlas");
   } catch (error) {
     console.error("Error connecting to MongoDB Atlas:", error);
     process.exit(1);
   }
 }
-
-let books = [
-  {
-    id: 1,
-    title: "The Hobbit",
-    author: "J. R. R. Tolken",
-    genre: "Fantasy",
-    year: "1937",
-  },
-  {
-    id: 2,
-    title: "To Kill a Mockingbird",
-    author: "Harper Lee",
-    genre: "Fiction",
-    year: "1960",
-  },
-  {
-    id: 3,
-    title: "1984",
-    author: "George Orwell",
-    genre: "Dystopian",
-    year: "1949",
-  },
-];
 
 connectToDatabase();
 
@@ -59,42 +35,67 @@ app.get("/books", async (req, res) => {
   }
 });
 
-// POST /books - Add a new task
-app.post("/books", (request, response) => {
-  const { id, description, status } = request.body;
-  if (!id || !description || !status) {
-    return response
+// POST /books - Add a new book to the database
+app.post("/books", async (req, res) => {
+  const { title, author, genre, year } = req.body;
+
+  // Basic validation for the request body
+  if (!title || !author || !genre || !year) {
+    return res
       .status(400)
-      .json({ error: "All fields (id, description, status) are required" });
+      .json({ error: "All fields (title, author, genre, year) are required" });
   }
 
-  books.push({ id, description, status });
-  response.status(201).json({ message: "Task added successfully" });
+  try {
+    const newBook = { title, author, genre, year };
+    const result = await booksCollection.insertOne(newBook); // Insert the book into MongoDB
+    res.status(201).json({
+      message: "Book added successfully",
+      bookId: result.insertedId,
+    });
+  } catch (error) {
+    res.status(500).json({ error: "Failed to add book to the database" });
+  }
 });
 
-// PUT /books/:id - Update a task's status
-app.put("/books/:id", (request, response) => {
-  const taskId = parseInt(request.params.id, 10);
-  const { status } = request.body;
-  const task = books.find((t) => t.id === taskId);
+// PUT /books/:id - Update a book's details (for example, changing the year)
+app.put("/books/:id", async (req, res) => {
+  const bookId = req.params.id;
+  const { title, author, genre, year } = req.body;
 
-  if (!task) {
-    return response.status(404).json({ error: "Task not found" });
+  try {
+    const result = await booksCollection.updateOne(
+      { _id: new MongoClient.ObjectID(bookId) }, // Convert bookId to ObjectID
+      { $set: { title, author, genre, year } }
+    );
+
+    if (result.modifiedCount === 0) {
+      return res.status(404).json({ error: "Book not found" });
+    }
+
+    res.json({ message: "Book updated successfully" });
+  } catch (error) {
+    res.status(500).json({ error: "Failed to update book" });
   }
-  task.status = status;
-  response.json({ message: "Task updated successfully" });
 });
 
-// DELETE /books/:id - Delete a task
-app.delete("/books/:id", (request, response) => {
-  const taskId = parseInt(request.params.id, 10);
-  const initialLength = books.length;
-  books = books.filter((t) => t.id !== taskId);
+// DELETE /books/:id - Delete a book
+app.delete("/books/:id", async (req, res) => {
+  const bookId = req.params.id;
 
-  if (books.length === initialLength) {
-    return response.status(404).json({ error: "Task not found" });
+  try {
+    const result = await booksCollection.deleteOne({
+      _id: new MongoClient.ObjectID(bookId), // Convert bookId to ObjectID
+    });
+
+    if (result.deletedCount === 0) {
+      return res.status(404).json({ error: "Book not found" });
+    }
+
+    res.json({ message: "Book deleted successfully" });
+  } catch (error) {
+    res.status(500).json({ error: "Failed to delete book" });
   }
-  response.json({ message: "Task deleted successfully" });
 });
 
 app.listen(PORT, () => {
