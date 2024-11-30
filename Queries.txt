@@ -19,6 +19,11 @@ db.Books.insertOne({title: "1984", author:"George Orwell", genre:"Dystopian", ye
 
 
 
+3: Get the Titles of all the books
+db.Books.find({},{title: 1, _id: 0});
+
+
+
 4: Find all books by J. R. R. Tolkien
 
 db.Books.find({author: "J. R. R. Tolkien"},{title: 1, _id: 0});
