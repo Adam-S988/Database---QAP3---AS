@@ -6,7 +6,7 @@ const PORT = 3000;
 app.use(express.json());
 
 const uri =
-  "mongodb+srv://adamstevenson:prVF1W1rzyMOgjlr@Books.o03qa.mongodb.net";
+  "mongodb+srv://adamstevenson:prVF1W1rzyMOgjlr@Books.o03qa.mongodb.net/?authSource=admin";
 const client = new MongoClient(uri);
 let booksCollection;
 

@@ -1,5 +1,12 @@
-curl -X POST http://localhost:3000/books -H "Content-Type: application/json" -d '{"title":"The Hobbit", "author":"J. R. R. Tolkien", "genre":"Fantasy", "year":"1937"}'
+use QAP3
 
-curl -X POST http://localhost:3000/books -H "Content-Type: application/json" -d '{"title":"To Kill a Mockingbird", "author":"Harper Lee", "genre":"Fiction", "year":"1960"}'
+db.Books.insertOne({
+title:"The Hobbit", author:"J. R. R. Tolkien", genre:"Fantasy", year:1937
+})
 
-curl -X POST http://localhost:3000/books -H "Content-Type: application/json" -d '{"title":"1984", "author":"George Orwell", "genre":"Distopian", "year":"1949"}'
+db.Books.insertOne({
+title:"To Kill a Mockingbird", author:"Harper Lee", genre:"Fiction", year:1960
+})
+
+db.Books.insertOne({title: "1984", author:"George Orwell", genre:"Dystopian", year:1949
+})
