@@ -6,37 +6,68 @@ use QAP3
 
 2: Insert the Data
 
-db.Books.insertOne({
-title:"The Hobbit", author:"J. R. R. Tolkien", genre:"Fantasy", year:1937
-})
+db.Books.insertOne(
+    {
+        title:"The Hobbit", author:"J. R. R. Tolkien", genre:"Fantasy", year:1937
+    }
+);
 
-db.Books.insertOne({
-title:"To Kill a Mockingbird", author:"Harper Lee", genre:"Fiction", year:1960
-})
+db.Books.insertOne(
+    {
+        title:"To Kill a Mockingbird", author:"Harper Lee", genre:"Fiction", year:1960
+    }
+);
 
-db.Books.insertOne({title: "1984", author:"George Orwell", genre:"Dystopian", year:1949
-})
+db.Books.insertOne(
+    {
+        title: "1984", author:"George Orwell", genre:"Dystopian", year:1949
+    }
+);
 
 
 
 3: Get the Titles of all the books
-db.Books.find({},{title: 1, _id: 0});
+db.Books.find(
+    {
+
+    },
+    {
+        title: 1, _id: 0
+    }
+);
 
 
 
 4: Find all books by J. R. R. Tolkien
-db.Books.find({author: "J. R. R. Tolkien"},{title: 1, _id: 0});
+db.Books.find(
+    {
+        author: "J. R. R. Tolkien"
+    },
+    {
+        title: 1, _id: 0
+    }
+);
 
 
 
 5: Update the genre of 1984
 db.Books.updateOne(
-{title: "1984"},
-{$set: {genre:"Science Fiction"}})
+    {
+        title: "1984"
+    },
+    {
+        $set: 
+        {
+            genre:"Science Fiction"
+        }
+    }
+);
 
 
 
 6: Delete The Hobbit
 db.Books.deleteOne(
-  {title: "The Hobbit"}
-)
+  {
+    title: "The Hobbit"
+    }
+);
