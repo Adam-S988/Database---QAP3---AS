@@ -25,7 +25,6 @@ db.Books.find({},{title: 1, _id: 0});
 
 
 4: Find all books by J. R. R. Tolkien
-
 db.Books.find({author: "J. R. R. Tolkien"},{title: 1, _id: 0});
 
 
@@ -34,3 +33,10 @@ db.Books.find({author: "J. R. R. Tolkien"},{title: 1, _id: 0});
 db.Books.updateOne(
 {title: "1984"},
 {$set: {genre:"Science Fiction"}})
+
+
+
+6: Delete The Hobbit
+db.Books.deleteOne(
+  {title: "The Hobbit"}
+)
