@@ -27,6 +27,7 @@ db.Books.insertOne(
 
 
 3: Get the Titles of all the books
+
 db.Books.find(
     {
 
@@ -39,6 +40,7 @@ db.Books.find(
 
 
 4: Find all books by J. R. R. Tolkien
+
 db.Books.find(
     {
         author: "J. R. R. Tolkien"
@@ -51,6 +53,7 @@ db.Books.find(
 
 
 5: Update the genre of 1984
+
 db.Books.updateOne(
     {
         title: "1984"
@@ -66,6 +69,7 @@ db.Books.updateOne(
 
 
 6: Delete The Hobbit
+
 db.Books.deleteOne(
   {
     title: "The Hobbit"
